@@ -6,5 +6,7 @@ namespace ChessaSystem.Models.Departamentos
     {
         public int DepartamentoId { get; set; }
         public string Nome { get; set; }
+    
+        public ICollection<Funcionario> Funcionarios { get; set; }
     }
 }

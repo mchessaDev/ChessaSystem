@@ -22,6 +22,7 @@ namespace ChessaSystem.Controllers.Funcionarios
             _configuration = configuration;
         }
 
+        /* Acao Listar */
         [HttpGet]
         public IActionResult Listar(string searchTerm, string sortColumn, string sortOrder,
             string filtroAtivo, string filtroDepartamento, string filtroCargo, int page = 1)
@@ -155,5 +156,197 @@ FETCH NEXT @PageSize ROWS ONLY";
 
             return View(funcionarios);
         }
+
+        /* Inicio do metodo Post direto via botão -*-* -*-* -*-* -*-* -*-* -*-* -*-* -*-* -*-* */
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult InserirDadosTeste()
+        {
+            try
+            {
+                // Criando um novo FuncionarioViewModel com dados de teste
+                var funcionarioTeste = new FuncionarioViewModel
+                {
+                    IdQuemCriou = 1, // Pode ser um id de usuário logado
+                    Matricula = "M" + new Random().Next(1000, 9999).ToString(),
+                    NumeroCracha = new Random().Next(10000000, 99999999).ToString(),
+                    Nome = "Teste",
+                    Sobrenome = "Automático",
+                    DataNascimento = DateTime.Parse("1992-04-17"),
+                    Telefone = "91984-3004",
+                    Rua = "Avenida Campinas, 222",
+                    Bairro = "Vila Floresta",
+                    CidadeId = 3,
+                    EstadoId = 2,
+                    Numero = "0123",
+                    Complemento = "Apto 909",
+                    CPF =
+                        $"{new Random().Next(100, 999)}.{new Random().Next(100, 999)}.{new Random().Next(100, 999)}-{new Random().Next(10, 99)}",
+                    Email = "teste" + new Random().Next(1000, 9999) + "@email.com",
+                    Senha = "senhaTeste",
+                    PrioridadeAcesso = 2,
+                    CargoId = 1, // ID do Cargo
+                    DepartamentoId = 2, // ID do Departamento
+                    DataAdmissao = DateTime.Parse("2023-11-05"),
+                    Ativo = true,
+                    MunicipioId = 2 // ID do Município
+                };
+
+                // Convertendo o FuncionarioViewModel para o Funcionario (Modelo do banco de dados)
+                var funcionario = new ChessaSystem.Models.Funcionario
+                {
+                    IdQuemCriou = funcionarioTeste.IdQuemCriou,
+                    Matricula = funcionarioTeste.Matricula,
+                    NumeroCracha = funcionarioTeste.NumeroCracha,
+                    Nome = funcionarioTeste.Nome,
+                    Sobrenome = funcionarioTeste.Sobrenome,
+                    DataNascimento = funcionarioTeste.DataNascimento,
+                    Telefone = funcionarioTeste.Telefone,
+                    Rua = funcionarioTeste.Rua,
+                    Bairro = funcionarioTeste.Bairro,
+                    CidadeId = funcionarioTeste.CidadeId,
+                    EstadoId = funcionarioTeste.EstadoId,
+                    Numero = funcionarioTeste.Numero,
+                    Complemento = funcionarioTeste.Complemento,
+                    CPF = funcionarioTeste.CPF,
+                    Email = funcionarioTeste.Email,
+                    Senha = funcionarioTeste.Senha,
+                    PrioridadeAcesso = funcionarioTeste.PrioridadeAcesso,
+                    CargoId = funcionarioTeste.CargoId,
+                    DepartamentoId = funcionarioTeste.DepartamentoId,
+                    DataAdmissao = funcionarioTeste.DataAdmissao,
+                    Ativo = funcionarioTeste.Ativo,
+                    MunicipioId = funcionarioTeste.MunicipioId
+                };
+
+                // Adicionando o novo Funcionario no banco de dados
+                _context.Funcionario.Add(funcionario);
+                _context.SaveChanges();
+
+                TempData["MensagemSucesso"] = "Inserção direta realizada com sucesso!";
+                return RedirectToAction(nameof(Listar)); // Redireciona para a listagem de funcionários
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                TempData["MensagemErro"] = "Erro na inserção direta.";
+                return RedirectToAction(nameof(Listar)); // Redireciona para a página de cadastro de novo funcionário
+            }
+        }
+        /* Fim do metodo Post direto via botão -*-* -*-* -*-* -*-* -*-* -*-* -*-* -*-* -*-* */
+
+        /* Inicio do metodo Post  via Post -*-* -*-* -*-* -*-* -*-* -*-* -*-* -*-* -*-* */
+
+        [HttpGet]
+        public IActionResult Novo()
+        {
+            // Preenchendo os campos de seleção
+            ViewBag.Cargos = new SelectList(_context.Cargo, "CargoId", "Nome");
+            ViewBag.Departamentos = new SelectList(_context.Departamento, "DepartamentoId", "Nome");
+            ViewBag.Municipios = new SelectList(_context.Municipio, "MunicipioId", "Nome");
+            ViewBag.Estados = new SelectList(_context.Estado, "EstadoId", "Nome");
+            ViewBag.Cidades = new SelectList(_context.Cidade, "CidadeId", "Nome"); // 🔹 Verifique se está correto
+
+            return View();
+        }
+
+[HttpPost]
+[ValidateAntiForgeryToken]
+public IActionResult Novo(FuncionarioViewModel funcionarioTeste)
+{
+    try
+    {
+        // Gerar automaticamente Matrícula e Número do Crachá
+        funcionarioTeste.Matricula ??= "M" + new Random().Next(1000, 9999).ToString();
+        funcionarioTeste.NumeroCracha ??= new Random().Next(10000000, 99999999).ToString();
+
+        // Garantir que campos FK estão preenchidos para evitar erro
+        funcionarioTeste.CargoId ??= 1;
+        funcionarioTeste.DepartamentoId ??= 1;
+        funcionarioTeste.CidadeId ??= 3; // Ajustado conforme sua tabela de exemplo
+        funcionarioTeste.EstadoId ??= 2; // Ajustado conforme sua tabela de exemplo
+        funcionarioTeste.MunicipioId ??= 2;
+
+        // Dados obrigatórios que podem causar erro caso falte
+        funcionarioTeste.Nome ??= "Nome Padrão";
+        funcionarioTeste.Sobrenome ??= "Sobrenome Padrão";
+        funcionarioTeste.CPF ??= 
+            $"{new Random().Next(100, 999)}.{new Random().Next(100, 999)}.{new Random().Next(100, 999)}-{new Random().Next(10, 99)}";
+        funcionarioTeste.Telefone ??= "11999999999";
+        funcionarioTeste.Email ??= "teste" + new Random().Next(1000, 9999) + "@email.com";
+        funcionarioTeste.Senha ??= "senhaTeste";
+        funcionarioTeste.DataAdmissao ??= DateTime.Now;
+
+        // Verificando se a matrícula, CPF ou Email já existem
+        if (_context.Funcionario.Any(f => f.Matricula == funcionarioTeste.Matricula))
+        {
+            ModelState.AddModelError("Matricula", "A matrícula informada já está cadastrada.");
+        }
+
+        if (_context.Funcionario.Any(f => f.CPF == funcionarioTeste.CPF))
+        {
+            ModelState.AddModelError("CPF", "O CPF informado já está cadastrado.");
+        }
+
+        if (_context.Funcionario.Any(f => f.Email == funcionarioTeste.Email))
+        {
+            ModelState.AddModelError("Email", "O email informado já está cadastrado.");
+        }
+
+        // Se houver erros, retorna à view com as mensagens de erro
+        if (!ModelState.IsValid)
+        {
+            // Carregar os ViewBag novamente (para os selectlists)
+            ViewBag.Cargos = new SelectList(_context.Cargo, "CargoId", "Nome");
+            ViewBag.Departamentos = new SelectList(_context.Departamento, "DepartamentoId", "Nome");
+            ViewBag.Municipios = new SelectList(_context.Municipio, "MunicipioId", "Nome");
+            ViewBag.Estados = new SelectList(_context.Estado, "EstadoId", "Nome");
+            ViewBag.Cidades = new SelectList(_context.Cidade, "CidadeId", "Nome");
+
+            return View(funcionarioTeste); // Retorna com o modelo de dados atual
+        }
+
+        // Criar a entidade no banco de dados
+        var funcionario = new ChessaSystem.Models.Funcionario
+        {
+            IdQuemCriou = funcionarioTeste.IdQuemCriou,
+            Matricula = funcionarioTeste.Matricula,
+            NumeroCracha = funcionarioTeste.NumeroCracha,
+            Nome = funcionarioTeste.Nome,
+            Sobrenome = funcionarioTeste.Sobrenome,
+            DataNascimento = funcionarioTeste.DataNascimento,
+            Telefone = funcionarioTeste.Telefone,
+            Rua = funcionarioTeste.Rua,
+            Bairro = funcionarioTeste.Bairro,
+            CidadeId = funcionarioTeste.CidadeId,
+            EstadoId = funcionarioTeste.EstadoId,
+            Numero = funcionarioTeste.Numero,
+            Complemento = funcionarioTeste.Complemento,
+            CPF = funcionarioTeste.CPF,
+            Email = funcionarioTeste.Email,
+            Senha = funcionarioTeste.Senha,
+            PrioridadeAcesso = funcionarioTeste.PrioridadeAcesso ?? 2,
+            CargoId = funcionarioTeste.CargoId,
+            DepartamentoId = funcionarioTeste.DepartamentoId,
+            DataAdmissao = funcionarioTeste.DataAdmissao,
+            Ativo = funcionarioTeste.Ativo ?? true,
+            MunicipioId = funcionarioTeste.MunicipioId
+        };
+
+        // Inserção no banco de dados
+        _context.Funcionario.Add(funcionario);
+        _context.SaveChanges();
+
+        TempData["MensagemSucesso"] = "Funcionário inserido com sucesso!";
+        return RedirectToAction(nameof(Listar)); // Redireciona para a listagem de funcionários
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex.Message);
+        TempData["MensagemErro"] = "Erro ao salvar no banco de dados.";
+        return View(funcionarioTeste); // Retorna com o modelo atual em caso de erro
+    }
+}
+
     }
 }

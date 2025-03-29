@@ -17,33 +17,33 @@ namespace ChessaSystem.Data.Repositories
 
         public async Task<List<Municipio>> GetAllMunicipiosAsync()
         {
-            return await _context.Municipios.ToListAsync();
+            return await _context.Municipio.ToListAsync();
         }
 
         public async Task<Municipio> GetMunicipioByIdAsync(int id)
         {
-            return await _context.Municipios.FirstOrDefaultAsync(m => m.MunicipioId == id);
+            return await _context.Municipio.FirstOrDefaultAsync(m => m.MunicipioId == id);
         }
 
         public async Task AddMunicipioAsync(Municipio municipio)
         {
-            _context.Municipios.Add(municipio);
+            _context.Municipio.Add(municipio);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateMunicipioAsync(Municipio municipio)
         {
-            _context.Municipios.Update(municipio);
+            _context.Municipio.Update(municipio);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteMunicipioAsync(int id)
         {
-            var municipio = await _context.Municipios.FirstOrDefaultAsync(m => m.MunicipioId == id);
+            var municipio = await _context.Municipio.FirstOrDefaultAsync(m => m.MunicipioId == id);
 
             if (municipio != null)
             {
-                _context.Municipios.Remove(municipio);
+                _context.Municipio.Remove(municipio);
                 await _context.SaveChangesAsync();
             }
         }

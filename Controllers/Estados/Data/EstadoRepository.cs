@@ -14,7 +14,7 @@ namespace ChessaSystem.Services
 
         public List<Estado> GetAllEstados()
         {
-            return _context.Estados.ToList();
+            return _context.Estado.ToList();
         }
     }
 }

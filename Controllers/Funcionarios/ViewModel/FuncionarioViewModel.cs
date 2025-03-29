@@ -2,8 +2,9 @@
 {
     public class FuncionarioViewModel
     {
-        public int FuncionarioId { get; set; }
-        public string Nome { get; set; }
+        public int FuncionarioId { get; set; } public string Nome { get; set; }
+        public int IdQuemCriou { get; set; }  // O id do usuário logado
+        public string NumeroCracha { get; set; }  // Número do crachá
         public string Sobrenome { get; set; }
         public string Matricula { get; set; }
         public string Email { get; set; }

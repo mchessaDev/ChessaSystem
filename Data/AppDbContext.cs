@@ -13,10 +13,10 @@ namespace ChessaSystem.Data
         {
         }
 
-        public DbSet<Cidade> Cidades { get; set; }
+        public DbSet<Cidade> Cidade { get; set; }
         public DbSet<Departamento> Departamento { get; set; }  // Aqui o nome da tabela é singular
-        public DbSet<Estado> Estados { get; set; }
-        public DbSet<Municipio> Municipios { get; set; }
+        public DbSet<Estado> Estado { get; set; }
+        public DbSet<Municipio> Municipio { get; set; }
         public DbSet<Cargo> Cargo { get; set; }  // A tabela é singular, não 'Cargos'
         public DbSet<Funcionario> Funcionario { get; set; }  // A tabela é singular, não 'Funcionarios'
 

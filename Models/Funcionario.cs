@@ -8,6 +8,8 @@ namespace ChessaSystem.Models
     public class Funcionario
     {
         public int FuncionarioId { get; set; }
+        public int IdQuemCriou { get; set; }
+        public string NumeroCracha { get; set; } 
         public string Nome { get; set; }
         public string Sobrenome { get; set; }
         public string Matricula { get; set; }
@@ -30,6 +32,9 @@ namespace ChessaSystem.Models
         public int? DepartamentoId { get; set; }
         public Departamento Departamento { get; set; }
 
+        public int? CidadeId { get; set; }
+        public Cidade Cidade { get; set; } 
+        
         public int? EstadoId { get; set; }
         public Estado Estado { get; set; }
 

@@ -18,33 +18,33 @@ namespace ChessaSystem.Data.Repositories
         // Método que estava faltando
         public async Task<List<Estado>> GetAllEstadosAsync()
         {
-            return await _context.Estados.ToListAsync();
+            return await _context.Estado.ToListAsync();
         }
 
         public async Task<Estado> GetEstadoByIdAsync(int id)
         {
-            return await _context.Estados.FirstOrDefaultAsync(e => e.EstadoId == id);
+            return await _context.Estado.FirstOrDefaultAsync(e => e.EstadoId == id);
         }
 
         public async Task AddEstadoAsync(Estado estado)
         {
-            _context.Estados.Add(estado);
+            _context.Estado.Add(estado);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateEstadoAsync(Estado estado)
         {
-            _context.Estados.Update(estado);
+            _context.Estado.Update(estado);
             await _context.SaveChangesAsync();
         }
 
         public async Task DeleteEstadoAsync(int id)
         {
-            var estado = await _context.Estados.FirstOrDefaultAsync(e => e.EstadoId == id);
+            var estado = await _context.Estado.FirstOrDefaultAsync(e => e.EstadoId == id);
 
             if (estado != null)
             {
-                _context.Estados.Remove(estado);
+                _context.Estado.Remove(estado);
                 await _context.SaveChangesAsync();
             }
         }

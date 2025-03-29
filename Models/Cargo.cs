@@ -7,6 +7,8 @@ namespace ChessaSystem.Models.Cargos
     {
         public int CargoId { get; set; }
         public string Nome { get; set; }
+    
+        public ICollection<Funcionario> Funcionarios { get; set; }
     }
 }
 

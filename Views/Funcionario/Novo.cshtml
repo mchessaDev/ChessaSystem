@@ -1,27 +1,158 @@
 ﻿@model ChessaSystem.ViewModels.FuncionarioViewModel
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
 
-<h2>Cadastrar Novo Funcionário</h2>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Novo Funcionário";
+}
 
-<form asp-action="Novo" method="post">
-    <div>
-        <label for="Nome">Nome</label>
-        <input type="text" id="Nome" name="Nome" value="@Model.Nome" required />
+<div class="card shadow-lg mt-3" style="border-radius: 15px;">
+    <div class="card-header text-center" style="background-color: #587fa5; color: white; border-radius: 15px 15px 0 0;">
+        <h3>Novo Funcionário</h3>
     </div>
 
-    <div>
-        <label for="Sobrenome">Sobrenome</label>
-        <input type="text" id="Sobrenome" name="Sobrenome" value="@Model.Sobrenome" required />
-    </div>
+    <div class="card-body">
+        <form asp-action="Novo" method="post">
+            @Html.AntiForgeryToken()
 
-    <div>
-        <label for="Matricula">Matrícula</label>
-        <input type="text" id="Matricula" name="Matricula" value="@Model.Matricula" required />
-    </div>
+            <!-- Campos ocultos -->
+            <input type="hidden" asp-for="Matricula" id="Matricula" value="@Model?.Matricula" />
+            <input type="hidden" asp-for="NumeroCracha" id="NumeroCracha" value="@Model?.NumeroCracha" />
 
-    <div>
-        <label for="Email">Email</label>
-        <input type="email" id="Email" name="Email" value="@Model.Email" required />
-    </div>
+            <!-- Dados Pessoais -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <i class="fas fa-user me-2"></i> Dados Pessoais
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nome" class="form-label">Nome</label>
+                        <input asp-for="Nome" class="form-control" value="@Model?.Nome" required />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Sobrenome" class="form-label">Sobrenome</label>
+                        <input asp-for="Sobrenome" class="form-control" value="@Model?.Sobrenome" required />
+                        <span asp-validation-for="Sobrenome" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Telefone" class="form-label">Telefone</label>
+                        <input asp-for="Telefone" class="form-control" value="@Model?.Telefone" required />
+                        <span asp-validation-for="Telefone" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataNascimento" class="form-label">Data de Nascimento</label>
+                        <input asp-for="DataNascimento" type="date" class="form-control" value="@Model?.DataNascimento?.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="DataNascimento" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CPF" class="form-label">CPF</label>
+                        <input asp-for="CPF" class="form-control" placeholder="999.999.999-99" value="@Model?.CPF" required />
+                        <span asp-validation-for="CPF" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Senha" class="form-label">Senha</label>
+                        <input asp-for="Senha" type="password" class="form-control" value="@Model?.Senha" required />
+                        <span asp-validation-for="Senha" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
 
-    <button type="submit">Cadastrar</button>
-</form>
+            <!-- Contato -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <i class="fas fa-envelope me-2"></i> Contato
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" value="@Model?.Email" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="card mb-3">
+                <div class="card-header bg-light">
+                    <i class="fas fa-map-marker-alt me-2"></i> Endereço
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Rua" class="form-label">Rua</label>
+                        <input asp-for="Rua" class="form-control" value="@Model?.Rua" required />
+                        <span asp-validation-for="Rua" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Numero" class="form-label">Número</label>
+                        <input asp-for="Numero" class="form-control" value="@Model?.Numero" required />
+                        <span asp-validation-for="Numero" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Complemento" class="form-label">Complemento</label>
+                        <input asp-for="Complemento" class="form-control" value="@Model?.Complemento" />
+                        <span asp-validation-for="Complemento" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Bairro" class="form-label">Bairro</label>
+                        <input asp-for="Bairro" class="form-control" value="@Model?.Bairro" />
+                        <span asp-validation-for="Bairro" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="CidadeId" class="form-label">Cidade</label>
+                        <select asp-for="CidadeId" asp-items="ViewBag.Cidades" class="form-select">
+                            <option value="">Selecione uma Cidade</option>
+                        </select>
+                        <span asp-validation-for="CidadeId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="EstadoId" class="form-label">Estado</label>
+                        <select asp-for="EstadoId" asp-items="ViewBag.Estados" class="form-select">
+                            <option value="">Selecione um Estado</option>
+                        </select>
+                        <span asp-validation-for="EstadoId" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="MunicipioId" class="form-label">Município</label>
+                        <select asp-for="MunicipioId" asp-items="ViewBag.Municipios" class="form-select">
+                            <option value="">Selecione um Município</option>
+                        </select>
+                        <span asp-validation-for="MunicipioId" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary px-4">
+                    <i class="fas fa-save me-1"></i> Salvar
+                </button>
+                <button type="reset" class="btn btn-outline-secondary">
+                    <i class="fas fa-eraser me-1"></i> Limpar
+                </button>
+                <a href="@Url.Action("Listar", "Funcionario")" class="btn btn-outline-warning px-4">
+                    <i class="fas fa-arrow-left me-2"></i> Voltar
+                </a>
+            </div>
+
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger mt-3"></div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+
+    <script>
+        $(document).ready(function () {
+            $('form').on('submit', function () {
+                if (!$('#Matricula').val()) {
+                    $('#Matricula').val('M' + Math.floor(1000 + Math.random() * 9000));
+                }
+                if (!$('#NumeroCracha').val()) {
+                    $('#NumeroCracha').val(Math.floor(10000000 + Math.random() * 90000000));
+                }
+            });
+        });
+    </script>
+}
