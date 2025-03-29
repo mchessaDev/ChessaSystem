@@ -1,8 +1,11 @@
-﻿Listar@{
-    ViewData["Title"] = "Home Page";
-}
+﻿<form id="formNovoFuncionario" method="post" action="/Funcionario/Novo" class="row g-3">
+    @Html.AntiForgeryToken()
+</form>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<!-- Novo Formulário para Inserção Direta -->
+<form method="post" action="/Funcionario/InserirDadosTeste" class="mt-3">
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-warning">
+        Testar Inserção Direta
+    </button>
+</form>
