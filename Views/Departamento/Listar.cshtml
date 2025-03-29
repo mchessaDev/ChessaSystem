@@ -1,0 +1,21 @@
+﻿@model IEnumerable<ChessaSystem.Models.Departamentos.Departamento>
+
+<h1>Departamentos</h1>
+
+<table>
+    <thead>
+    <tr>
+        <th>Departamento Id</th>
+        <th>Nome</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var departamento in Model)
+    {
+        <tr>
+            <td>@departamento.DepartamentoId</td>
+            <td>@departamento.Nome</td>
+        </tr>
+    }
+    </tbody>
+</table>

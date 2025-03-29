@@ -1,0 +1,116 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>@ViewData["Title"] - ChessaSystem</title>
+
+    <!-- ✅ CSS do Bootstrap -->
+    <link rel="stylesheet" href="/css/bootstrap.css" asp-append-version="true" />
+
+    <!-- ✅ Seu CSS customizado -->
+    <link rel="stylesheet" href="/css/site.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- ✅ FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+</head>
+<body>
+<!-- Topbar fixa -->
+<div class="topbar d-flex justify-content-between align-items-center bg-white shadow-sm px-4" style="height: 60px; position: fixed; top: 0; left: 0; right: 0; z-index: 1050;">
+    <!-- LOGO TEXTO -->
+    <div class="d-flex align-items-center">
+        <a href="/Home/Index" class="text-decoration-none d-flex align-items-center">
+            <span class="systemchessa-logo fw-bold">
+                System<span class="text-primary">Chessa</span>
+            </span>
+        </a>
+    </div>
+
+    <!-- USUÁRIO -->
+    <div class="dropdown">
+        <a class="d-flex align-items-center text-decoration-none dropdown-toggle user-dropdown-toggle"
+           href="#" role="button" id="menuUsuario" data-bs-toggle="dropdown" aria-expanded="false">
+            <span class="bg-primary text-white fw-bold rounded-circle px-2 py-1 me-2">MC</span>
+            <span class="text-dark">Marcelo</span>
+        </a>
+
+        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="menuUsuario">
+            <li><a class="dropdown-item" href="#">👤 Meu Perfil</a></li>
+            <li><a class="dropdown-item" href="#">⚙️ Configurações</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" href="#">🚪 Sair</a></li>
+        </ul>
+    </div>
+</div>
+
+
+
+
+<!-- 🔲 LAYOUT COM BARRA LATERAL -->
+<div class="layout-wrapper">
+    <aside class="sidebar">
+        <nav class="nav flex-column mt-3"><!-- Adicionado espaçamento vertical -->
+            <a class="nav-link toggle" href="#" onclick="toggleSubmenu(event, 'submenu-funcionarios')">
+                <i class="fas fa-users me-2"></i> Funcionários
+            </a>
+
+            <div id="submenu-funcionarios" class="submenu ms-3">
+                <a class="nav-link" asp-controller="Funcionario" asp-action="Listar">Listar</a>
+                <a class="nav-link" asp-controller="Funcionario" asp-action="Novo">Novo</a>
+            </div>
+
+            <a class="nav-link toggle" href="#" onclick="toggleSubmenu(event, 'submenu-financeiro')">
+                <i class="fas fa-dollar-sign me-2"></i> Financeiro
+            </a>
+            <div id="submenu-financeiro" class="submenu ms-3">
+                <a class="nav-link" asp-controller="Financeiro" asp-action="Contas">Contas a Pagar</a>
+                <a class="nav-link" asp-controller="Financeiro" asp-action="Relatorios">Relatórios</a>
+            </div>
+
+            <a class="nav-link toggle" href="#" onclick="toggleSubmenu(event, 'submenu-logistica')">
+                <i class="fas fa-truck me-2"></i> Logística
+            </a>
+            <div id="submenu-logistica" class="submenu ms-3">
+                <a class="nav-link" asp-controller="Logistica" asp-action="Estoque">Estoque</a>
+                <a class="nav-link" asp-controller="Logistica" asp-action="Transportes">Transportes</a>
+            </div>
+        </nav>
+    </aside>
+
+    <div class="main-content">
+        <div class="alert-container">
+            @if (TempData["MensagemSucesso"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["MensagemSucesso"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            @if (TempData["MensagemErro"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["MensagemErro"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </div>
+
+        <main role="main" class="card-content">
+            @RenderBody()
+        </main>
+    </div>
+</div>
+<!-- ✅ Carregar o Bootstrap JavaScript -->
+<script src="/js/bootstrap.bundle.js"></script>
+
+<script>
+    function toggleSubmenu(event, id) {
+        event.preventDefault();
+        const submenu = document.getElementById(id);
+        submenu.classList.toggle("show");
+    }
+</script>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

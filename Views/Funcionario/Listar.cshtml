@@ -1,0 +1,208 @@
+﻿@model IEnumerable<ChessaSystem.ViewModels.FuncionarioViewModel>
+
+@{
+    ViewData["Title"] = "Lista de Funcionários";
+    var searchTerm = Context.Request.Query["searchTerm"].ToString();
+    var filtroSituacao = Context.Request.Query["filtroSituacao"].ToString();
+    var filtroDepartamento = Context.Request.Query["filtroDepartamento"].ToString();
+    var filtroCargo = Context.Request.Query["filtroCargo"].ToString();
+}
+
+<div class="container-fluid px-3">
+
+    <div class="card border-0 shadow-sm text-white text-center py-3"
+         style="background-color: #5d85a6; border-top-left-radius: 1rem; border-top-right-radius: 1rem; margin-top: 30px;">
+        <h4 class="mb-1">Lista de Funcionários</h4>
+        <small>Gerencie os dados dos funcionários e seus detalhes diretamente aqui.</small>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card-body" style="background-color: #f9fbfc;">
+        <form method="get" class="row g-3 justify-content-center align-items-end mb-4">
+            <!-- 🔍 Campo de busca -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">🔍</span>
+                    <input type="text" class="form-control"
+                           name="searchTerm"
+                           placeholder="Nome, Matrícula ou Email"
+                           value="@ViewBag.SearchTerm"/>
+                </div>
+            </div>
+
+            <!-- 🏢 Filtro Departamento -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">🏢</span>
+                    <select name="filtroDepartamento" class="form-select">
+                        <option value="">Todos os Departamentos</option>
+                        @foreach (var departamento in ViewBag.Departamentos as List<SelectListItem>)
+                        {
+                            <option value="@departamento.Value" selected="@(filtroDepartamento == departamento.Value)">
+                                @departamento.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- 👔 Filtro Cargo -->
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">👔</span>
+                    <select name="filtroCargo" class="form-select">
+                        <option value="">Todos os Cargos</option>
+                        @foreach (var cargo in ViewBag.Cargos as List<SelectListItem>)
+                        {
+                            <option value="@cargo.Value" selected="@(filtroCargo == cargo.Value)">
+                                @cargo.Text
+                            </option>
+                        }
+                    </select>
+                </div>
+            </div>
+
+            <!-- ⚙️ Situação -->
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-text">⚙️</span>
+                    <select name="filtroAtivo" class="form-select">
+                        <option value="">Todas as Situações</option>
+                        <option value="ativo" selected="@(filtroSituacao == "ativo")">🟢 Ativo</option>
+                        <option value="inativo" selected="@(filtroSituacao == "inativo")">🔴 Inativo</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- 🔎 Botões: Buscar + Limpar -->
+            <div class="col-md-auto">
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-outline-primary px-4">
+                        🔎 Buscar
+                    </button>
+                    <a href="@Url.Action("Listar", "Funcionario")" class="btn btn-outline-secondary px-4">
+                        ❌ Limpar
+                    </a>
+                    <a href="@Url.Action("Novo", "Funcionario")" class="btn btn-outline-success px-4">
+                        ➕ Novo
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="table-responsive px-3">
+        <table class="table table-hover align-middle text-center">
+            <thead class="table-light">
+            <tr>
+                <th>Nome</th>
+                <th>Sobrenome</th>
+                <th>Telefone</th>
+                <th>Matrícula</th>
+                <th>Email</th>
+                <th>Prioridade</th>
+                <th>Cargo</th>
+                <th>Departamento</th>
+                <th>Admissão</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var f in Model)
+            {
+                <tr>
+                    <td>@f.Nome</td>
+                    <td>@f.Sobrenome</td>
+                    <td>@f.Telefone</td>
+                    <td>@f.Matricula</td>
+                    <td>@f.Email</td>
+                    <td>@f.PrioridadeAcesso</td>
+                    <td>@(f.CargoNome ?? "Não atribuído")</td>
+                    <td>@(f.DepartamentoNome ?? "Não atribuído")</td>
+                    <td>@(f.DataAdmissao?.ToShortDateString() ?? "N/A")</td>
+                    <td>
+                        <span class="fs-5" style="color:@(f.Ativo == true ? "green" : "red")">●</span>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <a href="/Funcionario/Detalhes/@f.FuncionarioId"
+                               class="btn btn-outline-primary btn-sm rounded-pill">
+                                <i class="fas fa-eye me-1"></i> Detalhes
+                            </a>
+                            <a href="/Funcionario/Editar/@f.FuncionarioId"
+                               class="btn btn-outline-warning btn-sm rounded-pill">
+                                <i class="fas fa-edit me-1"></i> Editar
+                            </a>
+                            <button type="button" class="btn btn-outline-danger btn-sm rounded-pill"
+                                    data-bs-toggle="modal" data-bs-target="#confirmarExclusaoModal"
+                                    data-id="@f.FuncionarioId" data-nome="@f.Nome">
+                                <i class="fas fa-trash-alt me-1"></i> Excluir
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginação -->
+    <div class="card-footer bg-light text-center">
+        <div class="d-flex justify-content-center gap-2">
+            @if (ViewBag.CurrentPage > 1)
+            {
+                <a href="?page=1" class="btn btn-outline-secondary">Primeira</a>
+                <a href="?page=@(ViewBag.CurrentPage - 1)" class="btn btn-outline-secondary">Anterior</a>
+            }
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <a href="?page=@i"
+                   class="btn @(i == ViewBag.CurrentPage ? "btn-primary" : "btn-outline-secondary")">@i</a>
+            }
+
+            @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+            {
+                <a href="?page=@(ViewBag.CurrentPage + 1)" class="btn btn-outline-secondary">Próxima</a>
+                <a href="?page=@ViewBag.TotalPages" class="btn btn-outline-secondary">Última</a>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmarExclusaoModal" tabindex="-1" aria-labelledby="confirmarExclusaoLabel"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmarExclusaoLabel">Confirmar Exclusão</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir o funcionário <strong id="nomeFuncionario"></strong>?</p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <form id="formExcluirFuncionario" method="post" action="/Funcionario/Excluir">
+                    @Html.AntiForgeryToken()
+                    <!-- Campo hidden para enviar o ID do funcionário -->
+                    <input type="hidden" name="funcionarioId" id="funcionarioIdParaExcluir"/>
+                    <button type="submit" class="btn btn-danger">Sim, excluir</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alerta de Sucesso -->
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success" role="alert" id="alertSucesso" style="display:none;">
+        @TempData["MensagemSucesso"]
+    </div>
+}
+
+<script src="/js/scripts.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"/>
