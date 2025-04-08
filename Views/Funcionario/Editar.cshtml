@@ -1,0 +1,172 @@
+﻿@model ChessaSystem.ViewModels.FuncionarioViewModel
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Editar Funcionário";
+}
+
+<!-- Mensagens de Sucesso ou Erro -->
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success">@TempData["MensagemSucesso"]</div>
+}
+@if (TempData["MensagemErro"] != null)
+{
+    <div class="alert alert-danger">@TempData["MensagemErro"]</div>
+}
+
+<div class="card shadow-lg mt-3" style="border-radius: 15px;">
+    <div class="card-header text-center" style="background-color: #587fa5; color: white; border-radius: 15px 15px 0 0;">
+        <h3>Editar @Model.Nome @Model.Sobrenome</h3>
+    </div>
+
+    <div class="card-body">
+        <form asp-action="Editar" method="post" enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+
+            <!-- Inputs Hidden Necessários -->
+            <input type="hidden" asp-for="FuncionarioId" />
+            <input type="hidden" asp-for="Matricula" />
+            <input type="hidden" asp-for="NumeroCracha" />
+            <input type="hidden" asp-for="Senha" />
+
+            <!-- Foto de Perfil -->
+            <div class="col-12 text-center mb-4">
+
+                <!-- Moldura da Foto (Preview) -->
+                <div id="fotoMoldura" style="margin: auto; padding: 10px; display: inline-block; background-color: white;">
+                    <img id="fotoPreview" src="@Url.Content("~/" + Model.CaminhoFotoPerfil)" alt="Pré-visualização da Foto"
+                         style="width: 200px; height: 200px; border-radius: 50%; display: @(!string.IsNullOrEmpty(Model.CaminhoFotoPerfil) ? "block" : "none");"/>
+                </div>
+
+                <!-- Botão para Upload -->
+                <div class="mt-1 text-center"> <!-- Ajuste aqui de mt-3 para mt-1 diminui o espaçamento -->
+                    <input type="file" class="form-control" name="FotoPerfil" id="FotoPerfil" accept="image/*"
+                           onchange="previewImagem(this);" style="display: none;" />
+                    <label for="FotoPerfil" class="btn btn-outline-primary mt-2 px-4">
+                        <i class="bi bi-upload"></i> Alterar Foto
+                    </label>
+                </div>
+            </div>
+
+            <!-- Dados Pessoais -->
+            <div class="card mb-3">
+                <div class="card-header bg-light d-flex align-items-center">
+                    <strong>Dados Pessoais</strong>
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Nome" class="form-label">Nome</label>
+                        <input asp-for="Nome" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Sobrenome" class="form-label">Sobrenome</label>
+                        <input asp-for="Sobrenome" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Telefone" class="form-label">Telefone</label>
+                        <input asp-for="Telefone" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="CPF" class="form-label">CPF</label>
+                        <input asp-for="CPF" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Email" class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataNascimento" class="form-label">Data de Nascimento</label>
+                        <input asp-for="DataNascimento" type="date" class="form-control" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Endereço -->
+            <div class="card mb-3">
+                <div class="card-header bg-light d-flex align-items-center">
+                    <strong>Endereço</strong>
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="Rua" class="form-label">Rua</label>
+                        <input asp-for="Rua" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Numero" class="form-label">Número</label>
+                        <input asp-for="Numero" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Complemento" class="form-label">Complemento</label>
+                        <input asp-for="Complemento" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Bairro" class="form-label">Bairro</label>
+                        <input asp-for="Bairro" class="form-control" />
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="EstadoId" class="form-label">Estado</label>
+                        <select asp-for="EstadoId" asp-items="ViewBag.Estados" class="form-select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="CidadeId" class="form-label">Cidade</label>
+                        <select asp-for="CidadeId" asp-items="ViewBag.Cidades" class="form-select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="MunicipioId" class="form-label">Município</label>
+                        <select asp-for="MunicipioId" asp-items="ViewBag.Municipios" class="form-select"></select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dados Profissionais -->
+            <div class="card mb-3">
+                <div class="card-header bg-light d-flex align-items-center">
+                    <strong>Dados Profissionais</strong>
+                </div>
+                <div class="card-body row g-3">
+                    <div class="col-md-6">
+                        <label asp-for="CargoId" class="form-label">Cargo</label>
+                        <select asp-for="CargoId" asp-items="ViewBag.Cargos" class="form-select"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DepartamentoId" class="form-label">Departamento</label>
+                        <select asp-for="DepartamentoId" asp-items="ViewBag.Departamentos" class="form-select"></select>
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="DataAdmissao" class="form-label">Data de Admissão</label>
+                        <input asp-for="DataAdmissao" type="date" class="form-control" />
+                    </div>
+                    <div class="col-md-6">
+                        <label asp-for="Ativo" class="form-label">Situação:</label>
+                        <input asp-for="Ativo" type="checkbox" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões -->
+            <div class="d-flex gap-2 mt-3">
+                <button type="submit" class="btn btn-primary px-4">Salvar</button>
+                <a href="@Url.Action("Listar", "Funcionario")" class="btn btn-outline-warning px-4">Voltar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script>
+        function previewImagem(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    var fotoPreview = document.getElementById('fotoPreview');
+                    fotoPreview.src = e.target.result;
+                    fotoPreview.style.display = 'block';
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}
